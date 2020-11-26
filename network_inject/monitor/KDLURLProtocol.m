@@ -157,7 +157,6 @@ didReceiveResponse:(NSURLResponse *)response {
     NSString *jsonDict = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];;
     if(error) {
         NSLog(@"JSON Parsing Error: %@", error);
-        //https://github.com/coderyi/NetworkEye/issues/3
         return nil;
     }
     return jsonDict;

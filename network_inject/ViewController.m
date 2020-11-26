@@ -15,6 +15,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.frame = CGRectMake(0, 0, 90, 50);
+    btn.center = self.view.center;
+    [btn setTitle:@"请求" forState:UIControlStateNormal];
+    [btn setBackgroundColor:[UIColor blueColor]];
+    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.view addSubview:btn];
+    [btn addTarget:self action:@selector(btnClicked) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)btnClicked {
     // Do any additional setup after loading the view.
     NSURL *httpDnsURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://180.101.49.12"]];
     NSMutableURLRequest *mutableReq = [NSMutableURLRequest requestWithURL:httpDnsURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval: 10];
@@ -48,7 +60,7 @@
     NSURLCredential *credential = nil;
 
     //获取原始域名信息
-    NSString *host = @"www.baidu.com";//[[self.kdl_dataTask.currentRequest allHTTPHeaderFields] objectForKey:@"host"];
+    NSString *host = [[task.currentRequest allHTTPHeaderFields] objectForKey:@"host"];;
     if (!host) {
         host = task.currentRequest.URL.host;
     }
