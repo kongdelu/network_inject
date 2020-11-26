@@ -10,10 +10,8 @@
 
 static NSString *const KeyHTTP = @"KeyHTTP"; //避免canInitWithRequest和canonicalRequestForRequest的死循环
 
-@interface KDLURLProtocol()<NSURLConnectionDelegate,NSURLConnectionDataDelegate>
+@interface KDLURLProtocol()
 
-@property (nonatomic, strong) NSURLRequest *kdl_request;
-@property (nonatomic, strong) NSURLResponse *kdl_response;
 @property (nonatomic, strong) NSMutableData *kdl_data;
 
 @end
@@ -97,8 +95,8 @@ static NSString *const KeyHTTP = @"KeyHTTP"; //避免canInitWithRequest和canoni
         }
 
         //获取请求结果
-        NSString *string = [self responseJSONFromData:self.kdl_data];
-        //NSLog(@"请求结果：%@",string);
+        NSString *string = [self responseJSONFromData:data];
+        NSLog(@"请求结果：%@",string);
     }];
     [dataTask resume];
 }
