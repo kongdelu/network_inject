@@ -10,22 +10,15 @@
 
 static NSString *const KeyHTTP = @"KeyHTTP"; //避免canInitWithRequest和canonicalRequestForRequest的死循环
 
-@interface KDLURLProtocol()<NSURLConnectionDataDelegate>
+@interface KDLURLProtocol()<NSURLConnectionDataDelegate,NSURLSessionDelegate>
 
 @property (nonatomic, strong) NSURLSessionTask *dataTask;
 @property (nonatomic, strong) NSURLConnection *connection;
-@property (nonatomic, strong) NSData *data;
+@property (nonatomic, strong) NSData *responseData;
 
 @end
 
 @implementation KDLURLProtocol
-
-- (NSMutableData *)data {
-    if (!_data) {
-        _data = [[NSMutableData alloc] initWithCapacity:100];
-    }
-    return _data;
-}
 
 + (void)start {
     KDLURLSessionConfiguration *sessionConfiguration = [KDLURLSessionConfiguration defaultConfiguration];
@@ -82,8 +75,9 @@ static NSString *const KeyHTTP = @"KeyHTTP"; //避免canInitWithRequest和canoni
     NSURLRequest *request = [[self class] canonicalRequestForRequest:self.request];
     self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
     
-//    NSURLSession *session=[NSURLSession sharedSession];
-//    self.dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+//    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+//    NSURLSession *sessison = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[NSOperationQueue currentQueue]];
+//    self.dataTask = [sessison dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
 //        self.data = data;
 //    }];
 //    [self.dataTask resume];
@@ -92,20 +86,20 @@ static NSString *const KeyHTTP = @"KeyHTTP"; //避免canInitWithRequest和canoni
     
      [self.connection cancel];
     //获取请求地址
-    NSString *requestUrl = self.dataTask.currentRequest.URL.absoluteString;
+    NSString *requestUrl = self.connection.currentRequest.URL.absoluteString;
     NSLog(@"URL：%@\n",requestUrl);
     //获取请求方法
-    NSString *requestMethod = self.dataTask.currentRequest.HTTPMethod;
+    NSString *requestMethod = self.connection.currentRequest.HTTPMethod;
     NSLog(@"Method：%@\n",requestMethod);
     
     //获取请求头
-    NSDictionary *headers = self.dataTask.currentRequest.allHTTPHeaderFields;
-    NSLog(@"Header：\n");
+    NSDictionary *headers = self.connection.currentRequest.allHTTPHeaderFields;
+    NSLog(@"Header：");
     for (NSString *key in headers.allKeys) {
         NSLog(@"%@ : %@",key,headers[key]);
     }
     //获取请求结果
-    NSString *string = [self responseJSONFromData:self.data];
+    NSString *string = [self responseJSONFromData:self.responseData];
     NSLog(@"Result：%@",string);
 }
 
@@ -137,8 +131,7 @@ didReceiveResponse:(NSURLResponse *)response {
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     [self.client URLProtocol:self didLoadData:data];
-    self.data = data;
-    NSLog(@"receiveData");
+    self.responseData = data;
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection
@@ -161,5 +154,4 @@ didReceiveResponse:(NSURLResponse *)response {
     }
     return jsonDict;
 }
-
 @end

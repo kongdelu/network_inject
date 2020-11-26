@@ -39,9 +39,9 @@
     NSURLSessionTask *task = [sessison dataTaskWithRequest:mutableReq completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error) {
             NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            NSLog(@"_________response: %@", string);
+            NSLog(@"success!");
         }else{
-            NSLog(@"_________error: %@", error);
+            NSLog(@"error: %@", error);
         }
     }];
     
