@@ -122,11 +122,6 @@ static NSString *const KeyHTTP = @"KeyHTTP"; //避免canInitWithRequest和canoni
     [self.client URLProtocol:self didReceiveAuthenticationChallenge:challenge];
 }
 
-- (void)connection:(NSURLConnection *)connection
-didCancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-    [self.client URLProtocol:self didCancelAuthenticationChallenge:challenge];
-}
-
 #pragma mark - NSURLConnectionDataDelegate
 -(NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response{
     if (response != nil) {
